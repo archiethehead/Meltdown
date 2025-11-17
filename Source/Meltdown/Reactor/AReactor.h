@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ReactorLight.h"
+#include "ControlRod.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/PointLightComponent.h"
 #include "Components/AudioComponent.h"
 #include "AReactor.generated.h"
 
@@ -46,8 +47,11 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor")
     UStaticMeshComponent* CoreMesh;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor")
-    UPointLightComponent* AlarmLight;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
+    TArray<AReactorLight*> ReactorLightArray;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
+    TArray<AControlRod*> ControlRodArray;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor")
     UAudioComponent* ReactorAudio;

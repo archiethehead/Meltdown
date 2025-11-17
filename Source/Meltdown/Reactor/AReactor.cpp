@@ -15,11 +15,6 @@ AAReactor::AAReactor() {
 	CoreMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CoreMesh"));
 	CoreMesh->SetupAttachment(RootComponent);
 
-	AlarmLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("AlarmLight"));
-	AlarmLight->SetupAttachment(RootComponent);
-	AlarmLight->SetIntensity(500.0f);
-	AlarmLight->SetLightColor(FLinearColor::Green);
-
 	ReactorAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ReactorAudio"));
 	ReactorAudio->SetupAttachment(RootComponent);
 
@@ -62,7 +57,7 @@ void AAReactor::Tick(float DeltaTime) {
 	}
 
 	UpdateReactorVisuals();
-	UE_LOG(LogTemp, Log, TEXT("Reactor Temp: %f"), CoreTemperature);
+
 }
 
 void AAReactor::ApplyCooling(float Amount) {
@@ -81,10 +76,10 @@ void AAReactor::ApplyUpgrade(float EfficiencyModifier, float StabilityModifier) 
 }
 
 void AAReactor::UpdateReactorVisuals() {
-
-	if (!AlarmLight) return;
-
+	UE_LOG(LogTemp, Log, TEXT("Changing Colour"));
 	//Light Temperature Color
+
+	if (!ReactorLightArray[0]) return;
 
 	FLinearColor LightColor = FLinearColor::Green;
 	float TempRatio = CoreTemperature / MaxTemperature;
@@ -101,8 +96,13 @@ void AAReactor::UpdateReactorVisuals() {
 	
 	}
 
-	AlarmLight->SetLightColor(LightColor);
-	AlarmLight->SetIntensity(FMath::Lerp(500.f, 300.f, TempRatio));
+	for (int x = 0; x < ReactorLightArray.Num(); x++) {
+
+		UE_LOG(LogTemp, Log, TEXT("Colour Changed"));
+		ReactorLightArray[x]->ChangeColor(LightColor, TempRatio);
+	
+	}
+
 }
 
 void AAReactor::TriggerMeltdown() {
