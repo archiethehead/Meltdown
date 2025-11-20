@@ -2,15 +2,10 @@
 
 
 #include "ReactorButton.h"
-#include "Meltdown/Reactor/AReactor.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/PointLightComponent.h"
-#include "TimerManager.h"
-#include "Engine/World.h"
 
 AReactorButton::AReactorButton() {
 
-    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = false;
 
     ButtonLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ButtonLight"));
     ButtonLight->SetupAttachment(Mesh);
@@ -50,7 +45,7 @@ void AReactorButton::ActivateButton() {
 
     if (LinkedReactor) {
 
-        LinkedReactor->ApplyCooling(100.f);
+        LinkedReactor->SCRAM();
 
     }
 

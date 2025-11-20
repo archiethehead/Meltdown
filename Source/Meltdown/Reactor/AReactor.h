@@ -15,58 +15,115 @@ UCLASS()
 class MELTDOWN_API AAReactor : public AActor {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
-	AAReactor();
+public:
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Constructor
+    AAReactor();
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-    
-    //Reactor Temperature Variables
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
+    //Called Every Frame
+    virtual void Tick(float DeltaTime) override;
+
+    //Called On Initialization
+    virtual void BeginPlay() override;
+
+    //Reactor State Variables
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
+    float TotalControlRodModifier;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
     float CoreTemperature;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-    float MaxTemperature;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
+    float CoolantTemperature;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-    float HeatIncreaseRate;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
+    float CoolantAmount;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-    float CoolingRate;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
+    bool IsPumpOn;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-    float StabilityFactor;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
+    bool IsMeltdown;
 
-    //In Game Variables
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor")
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reactor/State")
+    bool IsExploded;
+
+    //Reactor Tunable Variables
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin="0.0"))
+    float BaseHeatPerSecond;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0", ClampMax= "1.0"))
+    float RodMultiplier;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float MaxCoolingPerSecond;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float PassiveCoolingPerSecond;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "1.0"))
+    float MaxCoolantAmount;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float CoolantBoilingLossRate;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float CoolantBoilingPoint;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float SCRAMImmediateCool;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float SCRAMTempFailureThreshold;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+    float SCRAMCoolantFailureThreshold;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float MeltdownThreshold;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/Tunable", meta = (ClampMin = "0.0"))
+    float ExplosionThreshold;
+
+    //Reactor Methods
+    UFUNCTION(BlueprintCallable, Category = "Reactor/Methods")
+    void PumpToggle();
+
+    UFUNCTION(BlueprintCallable, Category = "Reactor/Methods")
+    void SCRAM();
+
+protected:
+
+    //Unreal Asset Variables
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor/UnrealAssets")
     UStaticMeshComponent* CoreMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-    TArray<AReactorLight*> ReactorLightArray;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-    TArray<AControlRod*> ControlRodArray;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reactor/UnrealAssets")
     UAudioComponent* ReactorAudio;
 
-    //Methods
-    UFUNCTION(BlueprintCallable, Category = "Reactor")
-    void ApplyCooling(float Amount);
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/UnrealAssets")
+    TArray<AReactorLight*> ReactorLightArray;
 
-    UFUNCTION(BlueprintCallable, Category = "Reactor")
-    void ApplyUpgrade(float EfficiencyModifier, float StabilityModifier);
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor/UnrealAssets")
+    TArray<AControlRod*> ControlRodArray;
 
-private:
+    //Reactor Methods
+    void ComputeTotalControlRodModifier();
+
+    void CalculateTemperature(float DeltaTime);
+
+    void CheckFailure();
+
+    float ClampNum(float v) {
+
+        return FMath::Clamp(v, 0.0, 1.0);
+
+    }
 
     void UpdateReactorVisuals();
 
     void TriggerMeltdown();
+
+    void TriggerExplosion();
 
 };

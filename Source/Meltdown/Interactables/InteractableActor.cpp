@@ -70,7 +70,7 @@ void AInteractableActor::SetPromptVisible(bool bVisible) {
 
     if (PromptWidget) {
 
-        PromptWidget->SetVisibility(bVisible);
+        PromptWidget->SetVisibility(bVisible, false);
 
     }
 

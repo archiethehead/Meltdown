@@ -27,7 +27,6 @@ void AReactorLight::BeginPlay()
 
 void AReactorLight::ChangeColor(FLinearColor Color, float TempRatio) {
        
-    UE_LOG(LogTemp, Log, TEXT("Colour Change"));
     AlarmLight->SetLightColor(Color);
     AlarmLight->SetIntensity(FMath::Lerp(500.f, 300.f, TempRatio));
 

@@ -9,6 +9,12 @@
 #include "InputActionValue.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "Meltdown/Interactables/Interactable.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "DrawDebugHelpers.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()

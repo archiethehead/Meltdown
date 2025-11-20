@@ -1,8 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractableActor.h"
 #include "Meltdown/Reactor/AReactor.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/PointLightComponent.h"
+#include "TimerManager.h"
+#include "Engine/World.h"
+#include "InteractableActor.h"
 #include "ReactorButton.generated.h"
 
 UCLASS()
@@ -12,6 +16,7 @@ class MELTDOWN_API AReactorButton : public AInteractableActor
 
 public:
     AReactorButton();
+    virtual void Interact_Implementation(AActor* Interactor) override;
 
 protected:
     virtual void BeginPlay() override;
@@ -36,6 +41,4 @@ protected:
     void ResetButton();
     void UpdateVisuals();
 
-public:
-    virtual void Interact_Implementation(AActor* Interactor) override;
 };
